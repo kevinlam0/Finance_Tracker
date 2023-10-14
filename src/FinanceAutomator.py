@@ -4,6 +4,8 @@ import gspread
 import time
 import os
 
+VALID_CATEGORIES = {"eating out", "groceries", "materialistic", "productive", "gas", "rent", "miscellaneous"}
+
 class FinanceAutomator:
     __google_sheet_name: str
     __sheet_file: gspread.spreadsheet.Spreadsheet
@@ -62,7 +64,11 @@ class FinanceAutomator:
         for key in personalization.categories.keys():
             if key in lower_desc: return personalization.categories[key]
             
-        category = input(f"We could not label the transaction.\nThis is the description: {description}\nThis is the amount: {amount}")
+        print(f"\nWe could not label the transaction.\nThis is the description: {description}\nThis is the amount: {amount}")
+        category = input("Please state what is the category of this transaction: ")
+        
+        while (category.strip() != "" and category.lower() not in VALID_CATEGORIES): 
+            category = input("The category is not valid. Please input one of the following or input nothing to skip:\nEating out, Groceries, Materialistic, Productive, Gas, Rent, Miscellaneous: ")
         if category.strip() == "": return "Other"
         return category.capitalize()
     
