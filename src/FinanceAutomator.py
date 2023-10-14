@@ -2,6 +2,7 @@ import csv
 import personalization
 import gspread
 import time
+import os
 
 class FinanceAutomator:
     __google_sheet_name: str
@@ -23,7 +24,23 @@ class FinanceAutomator:
             insertion_row = [row[0], row[1], row[2], row[3]]
             wks.insert_row(insertion_row, 8)
             time.sleep(2)
-    
+            
+    def inject_all_data(self, folder: str):
+        directory = './' + folder
+        files = os.listdir(directory)
+        for file in files:
+            # If not a csv file skip
+            if not file.endswith('csv'): continue
+            
+            # Find index of the year
+            i = file.find("2")
+            month = file[:i].capitalize()
+            year = file[i:i+4]
+            
+            sheet = f"{month} {year}"
+            data_file = f"{directory}/{file}"
+            self.inject_one_file(sheet, data_file)
+
     # ---- Private Helper Methods ---- #
     def __create_working_rows(self, file: str) -> list:
         transactions = []
