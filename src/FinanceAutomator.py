@@ -18,7 +18,7 @@ class FinanceAutomator:
             for row in csv_reader: 
                 date = row[0]
                 amount = float(row[1])
-                desc = row[4]
+                desc = self.__trim_description(row[4])
                 category = self.__find_category(desc, amount)
                 transaction: tuple = ((date, amount, desc, category))
                 transactions.append(transaction)
@@ -34,6 +34,17 @@ class FinanceAutomator:
         if category.strip() == "": return "Other"
         return category
     
+    def __trim_description(self, description: str) -> str:
+        desc = description.split()
+        if "CARD" in desc and personalization.card_ending in desc:
+            desc = desc[:-3]
+            
+        ans =  " ".join(str(element) for element in desc)
+        # if description.endswith("CARD 5157"):
+        #     i = description.find("CARD")
+        #     return description[:i]
+        return ans
+    
     def connect_to_google(self):
         sa = gspread.service_account()
         self.__sheet_file = sa.open(self.__google_sheet_name)
@@ -43,7 +54,8 @@ class FinanceAutomator:
         wks = self.__sheet_file.worksheet(sheet)
         rows = self.__create_working_rows(csv_file)
         for row in rows:
-            wks.insert_row([row[0], row[1], row[2], row[3]], 8)
+            insertion_row = [row[0], row[1], row[2], row[3]]
+            wks.insert_row(insertion_row, 8)
             time.sleep(2)
         
     
