@@ -9,7 +9,22 @@ class FinanceAutomator:
     
     def __init__(self, google_file):
         self.__google_sheet_name = google_file
+        
+    # ---- Public Methods ---- #
+    def connect_to_google(self):
+        sa = gspread.service_account()
+        self.__sheet_file = sa.open(self.__google_sheet_name)
+        print("Connection to Google is successful!")
+        
+    def inject_one_file(self, sheet, csv_file: str):
+        wks = self.__sheet_file.worksheet(sheet)
+        rows = self.__create_working_rows(csv_file)
+        for row in rows:
+            insertion_row = [row[0], row[1], row[2], row[3]]
+            wks.insert_row(insertion_row, 8)
+            time.sleep(2)
     
+    # ---- Private Helper Methods ---- #
     def __create_working_rows(self, file: str) -> list:
         transactions = []
         with open(file, 'r') as csv_file:
@@ -43,18 +58,4 @@ class FinanceAutomator:
             desc = desc[:-3]
             
         return  " ".join(str(element) for element in desc)
-    
-    def connect_to_google(self):
-        sa = gspread.service_account()
-        self.__sheet_file = sa.open(self.__google_sheet_name)
-        print("Connection to Google is successful!")
-        
-    def inject_into_sheet(self, sheet, csv_file: str):
-        wks = self.__sheet_file.worksheet(sheet)
-        rows = self.__create_working_rows(csv_file)
-        for row in rows:
-            insertion_row = [row[0], row[1], row[2], row[3]]
-            wks.insert_row(insertion_row, 8)
-            time.sleep(2)
-        
     
