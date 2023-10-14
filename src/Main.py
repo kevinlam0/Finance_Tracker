@@ -1,5 +1,6 @@
 import FinanceAutomator
 import csv
+import calendar
 """
 Run this file in order to input transactional data into your Google Sheet.
 
@@ -25,16 +26,28 @@ if __name__ == "__main__":
     fa.connect_to_google()
     fa.inject_one_file(sheet, file_path)
     # fa.inject_all_data(folder)
-    # file_path = "./checkingsData/venmomay2022.csv"
+    file_path = "./venmoData/venmojune2022.csv"
     # with open(file_path, 'r') as csv_reader:
     #     csv_reading = csv.reader(csv_reader)
         
-        # for i in range(len(csv_reading)):
-        #     print(csv_reading[i])
-        # loop = 5
-        # for line in csv_reading:
-        #     print(line)
-        #     if loop <= 0:
-        #         break
-        #     loop -= 1
+    #     # for i in range(len(csv_reading)):
+    #     #     print(csv_reading[i])
+    #     loop = 5
+    #     for line in csv_reading:
+    #         print(line)
+    #         if loop <= 0:
+    #             break
+    #         loop -= 1
+            
+    # files = open(file_path, 'r')
+    # lines = [line.strip() for line in files]
+    # for i in range(len(lines)):
+    #     print(f"{i} - {lines[i]}")
     
+    
+        
+    
+    # fa.venmo_lookup(43.42, "06/07/2022")
+    # string = "- $43.42"
+    # gsd = -43.42
+    # print(float(string[0]+string[3:]) == gsd)
