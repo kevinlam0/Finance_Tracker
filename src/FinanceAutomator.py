@@ -64,7 +64,7 @@ class FinanceAutomator:
             
         category = input(f"We could not label the transaction.\nThis is the description: {description}\nThis is the amount: {amount}")
         if category.strip() == "": return "Other"
-        return category
+        return category.capitalize()
     
     def __trim_description(self, description: str) -> str:
         desc = description.split()
