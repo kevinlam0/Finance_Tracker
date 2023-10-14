@@ -1,6 +1,7 @@
 import csv
 import personalization
 import gspread
+import time
 
 class FinanceAutomator:
     __google_sheet_name: str
@@ -18,7 +19,7 @@ class FinanceAutomator:
                 date = row[0]
                 amount = float(row[1])
                 desc = row[4]
-                category = self.__find_category(desc, personalization.categories, amount)
+                category = self.__find_category(desc, amount)
                 transaction: tuple = ((date, amount, desc, category))
                 transactions.append(transaction)
                 
@@ -36,11 +37,13 @@ class FinanceAutomator:
     def connect_to_google(self):
         sa = gspread.service_account()
         self.__sheet_file = sa.open(self.__google_sheet_name)
-        wks = self.__sheet_file.worksheet("Sheet1")
-        rows = None
-        wks.insert_row([2,6], 10)
         print("Connection to Google is successful!")
         
-    def inject_into_sheet(self, sheet):
-        pass
+    def inject_into_sheet(self, sheet, csv_file: str):
+        wks = self.__sheet_file.worksheet(sheet)
+        rows = self.__create_working_rows(csv_file)
+        for row in rows:
+            wks.insert_row([row[0], row[1], row[2], row[3]], 8)
+            time.sleep(2)
+        
     
