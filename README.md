@@ -1,2 +1,2 @@
-# Finance_Tracker
-Tracks my finance and displaying on Google Sheet
+# Finance Tracker
+Personal project for keeping track of my finances using Python and the Google Development API.
