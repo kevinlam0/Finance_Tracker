@@ -36,14 +36,13 @@ class FinanceAutomator:
     
     def __trim_description(self, description: str) -> str:
         desc = description.split()
+        if "PURCHASE AUTHORIZED" in description:
+            desc = desc[4:]
+            
         if "CARD" in desc and personalization.card_ending in desc:
             desc = desc[:-3]
             
-        ans =  " ".join(str(element) for element in desc)
-        # if description.endswith("CARD 5157"):
-        #     i = description.find("CARD")
-        #     return description[:i]
-        return ans
+        return  " ".join(str(element) for element in desc)
     
     def connect_to_google(self):
         sa = gspread.service_account()
