@@ -36,6 +36,9 @@ class FinanceAutomator:
     def connect_to_google(self):
         sa = gspread.service_account()
         self.__sheet_file = sa.open(self.__google_sheet_name)
+        wks = self.__sheet_file.worksheet("Sheet1")
+        rows = None
+        wks.insert_row([2,6], 10)
         print("Connection to Google is successful!")
         
     def inject_into_sheet(self, sheet):
