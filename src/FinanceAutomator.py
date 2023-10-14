@@ -3,14 +3,16 @@ import personalization
 import gspread
 import time
 import os
+import calendar
 
 VALID_CATEGORIES = {"eating out", "groceries", "materialistic", "productive", "gas", "rent", "miscellaneous"}
+VALID_INCOME = {"elder research", "doordash"}
 
 class FinanceAutomator:
     __google_sheet_name: str
     __sheet_file: gspread.spreadsheet.Spreadsheet
     
-    def __init__(self, google_file):
+    def __init__(self, google_file: str):
         self.__google_sheet_name = google_file
         
     # ---- Public Methods ---- #
@@ -48,11 +50,17 @@ class FinanceAutomator:
         transactions = []
         with open(file, 'r') as csv_file:
             csv_reader = csv.reader(csv_file)
-            
             for row in csv_reader: 
+                # Need these
                 date = row[0]
                 amount = float(row[1])
-                desc = self.__trim_description(row[4]) if "VENMO" not in row[4] else "Venmo transaction" + self.__venmo_lookup()
+                
+                # Find the description of the transaction.
+                # Could be a spending or an income 
+                if "VENMO" in row[4]: desc = "Venmo transaction: " + self.venmo_desc(amount, date) 
+                else: desc = self.__trim_description(row[4])
+                
+                if amount > 0: category = "Venmo" if "Venmo" in desc else "Work income"
                 category = self.__find_category(desc, amount, date)
                 transaction: tuple = ((date, amount, desc, category))
                 transactions.append(transaction)
@@ -62,13 +70,12 @@ class FinanceAutomator:
     def __find_category(self, description: str, amount: float, date: str) -> str: 
         lower_desc = description.lower()
         
-        if "venmo" in lower_desc: return self.__venmo_lookup(amount, date)
-        
         # Already a listed category
         for key in personalization.categories.keys():
             if key in lower_desc: return personalization.categories[key]
-            
-        message = f"\nWe could not label the transaction.\nThis is the description: {description}\nThis is the amount: {amount}\nThis is the date: {date}"
+        
+        venmo = "This is the description: " if "Venmo" not in description else ""
+        message = f"\nWe could not label the transaction.\n{venmo}{description}\nThis is the amount: {amount}\nThis is the date: {date}"
         return self.__get_users_cat(message)
     
     def __trim_description(self, description: str) -> str:
@@ -81,13 +88,39 @@ class FinanceAutomator:
             
         return  " ".join(str(element) for element in desc)
     
-    def __venmo_lookup(self, amount, date):
-        print("\nThis is a venmo transaction")
+    def venmo_desc(self, amount: float, date: str):
+        # Get the file path of the correct venmo month data
+        month = calendar.month_name[int(date[:2])].lower()
+        day = int(date[3:5])
+        year = date[-4:]
+        file_path = f"./venmoData/venmo{month}{year}.csv"
+        
+        # Reading the file
+        file = open(file_path, 'r')
+        # Transform into list 
+        lines = [line.strip() for line in file]
+        # Dropping the unnecessary information
+        lines = lines[4:-27]
+        
+        # Find the correct transaction
+        for i in range(len(lines)):
+            row = lines[i].split(",")
+            venmo_amount = float(row[8][0] + row[8][3:])
+            venmo_day = int(row[2][8:10])
+            if venmo_amount == amount and abs(day - venmo_day) < 3: return f"\"{row[5]}\" to {row[7]}" 
+            
+        raise Exception
+            
+            
         """[2] Date '2022-05-03T19:35:58'
             [5] Description
             [7] to who
             [8] amount"""
-    
+        
+        
+        
+        
+        
     def __get_users_cat(self, initial_message):
         print(initial_message)
         category = input("Please state what is the category of this transaction: ")
