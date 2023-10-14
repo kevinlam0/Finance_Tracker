@@ -1,6 +1,7 @@
 import csv
 import personalization
 import gspread
+import time
 
 class FinanceAutomator:
     __google_sheet_name: str
@@ -8,7 +9,22 @@ class FinanceAutomator:
     
     def __init__(self, google_file):
         self.__google_sheet_name = google_file
+        
+    # ---- Public Methods ---- #
+    def connect_to_google(self):
+        sa = gspread.service_account()
+        self.__sheet_file = sa.open(self.__google_sheet_name)
+        print("Connection to Google is successful!")
+        
+    def inject_one_file(self, sheet, csv_file: str):
+        wks = self.__sheet_file.worksheet(sheet)
+        rows = self.__create_working_rows(csv_file)
+        for row in rows:
+            insertion_row = [row[0], row[1], row[2], row[3]]
+            wks.insert_row(insertion_row, 8)
+            time.sleep(2)
     
+    # ---- Private Helper Methods ---- #
     def __create_working_rows(self, file: str) -> list:
         transactions = []
         with open(file, 'r') as csv_file:
@@ -17,8 +33,8 @@ class FinanceAutomator:
             for row in csv_reader: 
                 date = row[0]
                 amount = float(row[1])
-                desc = row[4]
-                category = self.__find_category(desc, personalization.categories, amount)
+                desc = self.__trim_description(row[4])
+                category = self.__find_category(desc, amount)
                 transaction: tuple = ((date, amount, desc, category))
                 transactions.append(transaction)
                 
@@ -33,14 +49,13 @@ class FinanceAutomator:
         if category.strip() == "": return "Other"
         return category
     
-    def connect_to_google(self):
-        sa = gspread.service_account()
-        self.__sheet_file = sa.open(self.__google_sheet_name)
-        wks = self.__sheet_file.worksheet("Sheet1")
-        rows = None
-        wks.insert_row([2,6], 10)
-        print("Connection to Google is successful!")
-        
-    def inject_into_sheet(self, sheet):
-        pass
+    def __trim_description(self, description: str) -> str:
+        desc = description.split()
+        if "PURCHASE AUTHORIZED" in description:
+            desc = desc[4:]
+            
+        if "CARD" in desc and personalization.card_ending in desc:
+            desc = desc[:-3]
+            
+        return  " ".join(str(element) for element in desc)
     
