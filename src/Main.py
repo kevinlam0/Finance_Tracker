@@ -15,5 +15,6 @@ sheet = "Sheet1"
 if __name__ == "__main__":
     fa = FinanceAutomator.FinanceAutomator(google_sheet)
     fa.connect_to_google()
-    fa.inject_one_file(sheet, file_path)
+    # fa.inject_one_file(sheet, file_path)
+    fa.inject_all_data("checkingsData")
     
