@@ -5,9 +5,6 @@ import time
 import os
 import calendar
 
-VALID_CATEGORIES = {"eating out", "groceries", "materialistic", "productive", "gas", "rent", "miscellaneous"}
-VALID_INCOME = {"elder research", "doordash"}
-
 class FinanceAutomator:
     __google_sheet_name: str
     __sheet_file: gspread.spreadsheet.Spreadsheet
@@ -21,12 +18,12 @@ class FinanceAutomator:
         self.__sheet_file = sa.open(self.__google_sheet_name)
         print("Connection to Google is successful!")
         
-    def inject_one_file(self, sheet, csv_file: str):
+    def inject_one_file(self, sheet: str, csv_file: str):
         wks = self.__sheet_file.worksheet(sheet)
         rows = self.__create_working_rows(csv_file)
         for row in rows:
             insertion_row = [row[0], row[1], row[2], row[3]]
-            wks.insert_row(insertion_row, 8)
+            wks.insert_row(insertion_row, 2)
             time.sleep(2)
             
     def inject_all_data(self, folder: str):
@@ -76,7 +73,7 @@ class FinanceAutomator:
         
         venmo = "This is the description: " if "Venmo" not in description else ""
         message = f"\nWe could not label the transaction.\n{venmo}{description}\nThis is the amount: {amount}\nThis is the date: {date}"
-        return self.__get_users_cat(message)
+        return self.__get_users_cat(message, personalization.VALID_CATEGORIES)
     
     def __trim_description(self, description: str) -> str:
         desc = description.split()
@@ -116,20 +113,27 @@ class FinanceAutomator:
             [5] Description
             [7] to who
             [8] amount"""
-        
-        
-        
-        
-        
-    def __get_users_cat(self, initial_message):
+  
+    def __get_users_cat(self, initial_message, map):
         print(initial_message)
         category = input("Please state what is the category of this transaction: ")
         
-        while (category.strip() != "" and category.lower() not in VALID_CATEGORIES): 
+        while (category.strip() != "" and category.lower() not in map): 
             category = input("The category is not valid. Please input one of the following or input nothing to skip:\nEating out, Groceries, Materialistic, Productive, Gas, Rent, Miscellaneous: ")
         
         # If blank then just mark it as other
         if category.strip() == "": return "Other"
         
         return category.capitalize()
-    
+ 
+    def __find_income_cat(self, description: str, amount: float, date: str) -> str:
+        lower_desc = description.lower()
+        for key in personalization.VALID_INCOME:
+            if key in lower_desc: return key.capitalize()
+        
+        message = f"This is an income with a source we cannot find: {description}\nThis is the amount: {amount}\nThis is the date: {date}"
+        return self.__get_users_cat()
+               
+        
+               
+        
