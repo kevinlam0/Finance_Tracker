@@ -4,6 +4,7 @@ import gspread
 import time
 import os
 import calendar
+import TransactionReader
 
 class FinanceAutomator:
     __google_sheet_name: str
@@ -16,11 +17,12 @@ class FinanceAutomator:
     def connect_to_google(self):
         sa = gspread.service_account()
         self.__sheet_file = sa.open(self.__google_sheet_name)
-        print("Connection to Google is successful!")
+        print("Connection to Google is successful!\n")
         
-    def inject_one_file(self, sheet: str, csv_file: str):
+    def inject_one_file(self, sheet: str, file: str):
         wks = self.__sheet_file.worksheet(sheet)
-        rows = self.__create_working_rows(csv_file)
+        rows = TransactionReader.format_rows_csv_file(file)
+        
         for row in rows:
             insertion_row = [row[0], row[1], row[2], row[3]]
             wks.insert_row(insertion_row, 2)
@@ -43,70 +45,70 @@ class FinanceAutomator:
             self.inject_one_file(sheet, data_file)
 
     # ---- Private Helper Methods ---- #
-    def __create_working_rows(self, file: str) -> list:
-        transactions = []
-        with open(file, 'r') as csv_file:
-            csv_reader = csv.reader(csv_file)
-            for row in csv_reader: 
-                # Need these
-                date = row[0]
-                amount = float(row[1])
+    # def __create_working_rows(self, file: str) -> list:
+    #     transactions = []
+    #     with open(file, 'r') as csv_file:
+    #         csv_reader = csv.reader(csv_file)
+    #         for row in csv_reader: 
+    #             # Need these
+    #             date = row[0]
+    #             amount = float(row[1])
                 
-                # Find the description of the transaction.
-                # Could be a spending or an income 
-                if "VENMO" in row[4]: desc = "Venmo transaction: " + self.venmo_desc(amount, date) 
-                else: desc = self.__trim_description(row[4])
+    #             # Find the description of the transaction.
+    #             # Could be a spending or an income 
+    #             if "VENMO" in row[4]: desc = "Venmo transaction: " + self.venmo_desc(amount, date) 
+    #             else: desc = self.__trim_description(row[4])
                 
-                if amount > 0: category = "Venmo" if "Venmo" in desc else "Work income"
-                category = self.__find_category(desc, amount, date)
-                transaction: tuple = ((date, amount, desc, category))
-                transactions.append(transaction)
+    #             if amount > 0: category = "Venmo" if "Venmo" in desc else "Work income"
+    #             category = self.__find_category(desc, amount, date)
+    #             transaction: tuple = ((date, amount, desc, category))
+    #             transactions.append(transaction)
                 
-        return transactions
+    #     return transactions
     
-    def __find_category(self, description: str, amount: float, date: str) -> str: 
-        lower_desc = description.lower()
+    # def __find_category(self, description: str, amount: float, date: str) -> str: 
+    #     lower_desc = description.lower()
         
-        # Already a listed category
-        for key in personalization.categories.keys():
-            if key in lower_desc: return personalization.categories[key]
+    #     # Already a listed category
+    #     for key in personalization.categories.keys():
+    #         if key in lower_desc: return personalization.categories[key]
         
-        venmo = "This is the description: " if "Venmo" not in description else ""
-        message = f"\nWe could not label the transaction.\n{venmo}{description}\nThis is the amount: {amount}\nThis is the date: {date}"
-        return self.__get_users_cat(message, personalization.VALID_CATEGORIES)
+    #     venmo = "This is the description: " if "Venmo" not in description else ""
+    #     message = f"\nWe could not label the transaction.\n{venmo}{description}\nThis is the amount: {amount}\nThis is the date: {date}"
+    #     return self.__get_users_cat(message, personalization.VALID_CATEGORIES)
     
-    def __trim_description(self, description: str) -> str:
-        desc = description.split()
-        if "PURCHASE AUTHORIZED" in description:
-            desc = desc[4:]
+    # def __trim_description(self, description: str) -> str:
+    #     desc = description.split()
+    #     if "PURCHASE AUTHORIZED" in description:
+    #         desc = desc[4:]
             
-        if "CARD" in desc and personalization.card_ending in desc:
-            desc = desc[:-3]
+    #     if "CARD" in desc and personalization.card_ending in desc:
+    #         desc = desc[:-3]
             
-        return  " ".join(str(element) for element in desc)
+    #     return  " ".join(str(element) for element in desc)
     
-    def venmo_desc(self, amount: float, date: str):
-        # Get the file path of the correct venmo month data
-        month = calendar.month_name[int(date[:2])].lower()
-        day = int(date[3:5])
-        year = date[-4:]
-        file_path = f"./venmoData/venmo{month}{year}.csv"
+    # def venmo_desc(self, amount: float, date: str):
+    #     # Get the file path of the correct venmo month data
+    #     month = calendar.month_name[int(date[:2])].lower()
+    #     day = int(date[3:5])
+    #     year = date[-4:]
+    #     file_path = f"./venmoData/venmo{month}{year}.csv"
         
-        # Reading the file
-        file = open(file_path, 'r')
-        # Transform into list 
-        lines = [line.strip() for line in file]
-        # Dropping the unnecessary information
-        lines = lines[4:-27]
+    #     # Reading the file
+    #     file = open(file_path, 'r')
+    #     # Transform into list 
+    #     lines = [line.strip() for line in file]
+    #     # Dropping the unnecessary information
+    #     lines = lines[4:-27]
         
-        # Find the correct transaction
-        for i in range(len(lines)):
-            row = lines[i].split(",")
-            venmo_amount = float(row[8][0] + row[8][3:])
-            venmo_day = int(row[2][8:10])
-            if venmo_amount == amount and abs(day - venmo_day) < 3: return f"\"{row[5]}\" to {row[7]}" 
+    #     # Find the correct transaction
+    #     for i in range(len(lines)):
+    #         row = lines[i].split(",")
+    #         venmo_amount = float(row[8][0] + row[8][3:])
+    #         venmo_day = int(row[2][8:10])
+    #         if venmo_amount == amount and abs(day - venmo_day) < 3: return f"\"{row[5]}\" to {row[7]}" 
             
-        raise Exception
+    #     raise Exception
             
             
         """[2] Date '2022-05-03T19:35:58'
@@ -114,18 +116,6 @@ class FinanceAutomator:
             [7] to who
             [8] amount"""
   
-    def __get_users_cat(self, initial_message, map):
-        print(initial_message)
-        category = input("Please state what is the category of this transaction: ")
-        
-        while (category.strip() != "" and category.lower() not in map): 
-            category = input("The category is not valid. Please input one of the following or input nothing to skip:\nEating out, Groceries, Materialistic, Productive, Gas, Rent, Miscellaneous: ")
-        
-        # If blank then just mark it as other
-        if category.strip() == "": return "Other"
-        
-        return category.capitalize()
- 
     def __find_income_cat(self, description: str, amount: float, date: str) -> str:
         lower_desc = description.lower()
         for key in personalization.VALID_INCOME:
