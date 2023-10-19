@@ -21,14 +21,19 @@ class WellsFargoReader(TransactionReader):
                 amount = float(row[1])
                 
                 # Find the description of the transaction.
-                # Could be a spending or an income 
                 if "VENMO" in row[4]: 
                     desc = "Venmo transaction: " + Venmo_Reader.find_venmo_transaction_description(amount, date) 
                 else: 
                     desc = self.__trim_description(row[4])
                 
-                if amount > 0: category = "Venmo" if "Venmo" in desc else "Work income"
-                category = super()._find_category(desc, amount, date)
+                # If it is an income
+                if amount > 0: 
+                    if "Venmo" in desc:
+                        category = "Venmo"
+                    else: category = super()._find_income_category(desc, amount, date)
+                
+                else: category = super()._find_category(desc, amount, date)
+                
                 transaction: tuple = ((date, amount, desc, category))
                 transactions.append(transaction)
                 

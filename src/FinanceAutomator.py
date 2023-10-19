@@ -25,8 +25,9 @@ class FinanceAutomator:
         
         for row in rows:
             insertion_row = [row[0], row[1], row[2], row[3]]
-            wks.insert_row(insertion_row, 2)
-            time.sleep(2)
+            print(insertion_row)
+            # wks.insert_row(insertion_row, 2)
+            # time.sleep(2)
             
     def inject_all_data(self, folder: str):
         directory = './' + folder
@@ -115,15 +116,7 @@ class FinanceAutomator:
             [5] Description
             [7] to who
             [8] amount"""
-  
-    def __find_income_cat(self, description: str, amount: float, date: str) -> str:
-        lower_desc = description.lower()
-        for key in personalization.VALID_INCOME:
-            if key in lower_desc: return key.capitalize()
         
-        message = f"This is an income with a source we cannot find: {description}\nThis is the amount: {amount}\nThis is the date: {date}"
-        return self.__get_users_cat()
-               
         
                
         
