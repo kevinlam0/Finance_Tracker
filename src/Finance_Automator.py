@@ -22,9 +22,9 @@ class Finance_Automator:
         
         for row in rows:
             insertion_row = [row[0], row[1], row[2], row[3], row[4]]
-            print(insertion_row)
-            # wks.insert_row(insertion_row, 2)
-            # time.sleep(2)
+            # print(insertion_row)
+            wks.insert_row(insertion_row, 2)
+            time.sleep(2)
             
     def inject_all_data(self, folder: str):
         directory = './' + folder
