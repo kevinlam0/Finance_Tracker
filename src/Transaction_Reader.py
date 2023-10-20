@@ -23,7 +23,7 @@ class Transaction_Reader(ABC):
     def _find_income_category(self, description: str, amount: float, date: str) -> str:
         lower_desc = description.lower()
         for key in VALID_INCOME:
-            if key in lower_desc: return key.capitalize()
+            if key in lower_desc: return VALID_INCOME.get(key)
 
         message = f"\nThis is an income with a source we cannot find: {description}\nThis is the amount: {amount}\nThis is the date: {date}"
         return _get_user_income_category(message)
