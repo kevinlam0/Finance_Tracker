@@ -5,7 +5,7 @@ class Transaction_Reader(ABC):
     
     @abstractmethod
     def format_rows_from_csv_file(self, file: str) -> list:
-        # [Date, Amount, Description, Category]
+        # [Date, Amount, Description, Category, Type]
         pass
     
     def _find_category(self, description: str, amount: str, date: str) -> str:
@@ -54,5 +54,6 @@ def _get_user_income_category(message: str):
 def format_rows_csv_file(file: str):
     from Wells_Fargo_Reader import Wells_Fargo_Reader
     if "WF" in file:
-        reader: Wells_Fargo_Reader = Wells_Fargo_Reader()
+        card = input("What type of card is this Wells Fargo data from, Credit or Debit?: ")
+        reader: Wells_Fargo_Reader = Wells_Fargo_Reader(card)
         return reader.format_rows_from_csv_file(file)
