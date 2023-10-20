@@ -21,7 +21,7 @@ class Finance_Automator:
         rows = Transaction_Reader.format_rows_csv_file(file)
         
         for row in rows:
-            insertion_row = [row[0], row[1], row[2], row[3]]
+            insertion_row = [row[0], row[1], row[2], row[3], row[4]]
             print(insertion_row)
             # wks.insert_row(insertion_row, 2)
             # time.sleep(2)
