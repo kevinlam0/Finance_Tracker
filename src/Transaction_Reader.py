@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from personalization import VALID_CATEGORIES, VALID_INCOME, INPUT_CATEGORIES, INPUT_INCOME, categories
 
-class TransactionReader(ABC):
+class Transaction_Reader(ABC):
     
     @abstractmethod
     def format_rows_from_csv_file(self, file: str) -> list:
@@ -52,7 +52,7 @@ def _get_user_income_category(message: str):
     return category.capitalize()
 
 def format_rows_csv_file(file: str):
-    from WellsFargoReader import WellsFargoReader
+    from Wells_Fargo_Reader import Wells_Fargo_Reader
     if "WF" in file:
-        reader: WellsFargoReader = WellsFargoReader()
+        reader: Wells_Fargo_Reader = Wells_Fargo_Reader()
         return reader.format_rows_from_csv_file(file)

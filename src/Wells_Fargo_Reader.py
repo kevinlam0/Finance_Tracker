@@ -1,9 +1,9 @@
-from TransactionReader import TransactionReader
+from Transaction_Reader import Transaction_Reader
 import csv
 import personalization
 import Venmo_Reader
 
-class WellsFargoReader(TransactionReader):
+class Wells_Fargo_Reader(Transaction_Reader):
     def __new__(cls, *args, **kwargs):
         instance = super(WellsFargoReader, cls).__new__(cls)
         return instance

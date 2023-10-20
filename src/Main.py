@@ -1,4 +1,4 @@
-import FinanceAutomator
+import Finance_Automator
 import csv
 import calendar
 """
@@ -22,7 +22,7 @@ folder = "checkingsData"
 
 
 if __name__ == "__main__":
-    fa = FinanceAutomator.FinanceAutomator(google_sheet)
+    fa = Finance_Automator.Finance_Automator(google_sheet)
     fa.connect_to_google()
     fa.inject_one_file(sheet, file_path)
     # fa.inject_all_data(folder)
