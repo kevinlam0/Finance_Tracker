@@ -34,7 +34,7 @@ class Wells_Fargo_Reader(Transaction_Reader):
                 # If it is an income
                 if amount > 0: 
                     if "Venmo" in desc:
-                        category = "Venmo"
+                        category = "Venmo income"
                     else: category = super()._find_income_category(desc, amount, date)
                 
                 else: category = super()._find_category(desc, amount, date)

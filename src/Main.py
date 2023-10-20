@@ -1,6 +1,5 @@
 import Finance_Automator
-import csv
-import calendar
+
 """
 Run this file in order to input transactional data into your Google Sheet.
 
@@ -16,7 +15,7 @@ Args:
 """
 file_path = './checkingsData/WFjune2022.csv'
 google_sheet = "Finance Tracker 2"
-sheet = "May 2022"
+sheet = "June 2022"
 folder = "checkingsData"
 
 
