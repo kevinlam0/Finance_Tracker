@@ -1,7 +1,9 @@
-from Transaction_Reader import Transaction_Reader
+import os, sys
+fpath = os.path.join(os.path.dirname(__file__), '../')
+sys.path.append(fpath)
+from src.Transaction_Reader import Transaction_Reader
 import csv
-import personalization
-import Venmo_Reader
+import src.Venmo_Reader as Venmo_Reader
 
 class Wells_Fargo_Reader(Transaction_Reader):
     card: str

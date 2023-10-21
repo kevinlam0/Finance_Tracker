@@ -1,5 +1,8 @@
 from abc import ABC, abstractmethod
-from personalization import VALID_CATEGORIES, VALID_INCOME, INPUT_CATEGORIES, INPUT_INCOME, CATEGORIES
+import os, sys
+fpath = os.path.join(os.path.dirname(__file__), '../')
+sys.path.append(fpath)
+from src.personalization import VALID_CATEGORIES, VALID_INCOME, INPUT_CATEGORIES, INPUT_INCOME, CATEGORIES
 
 class Transaction_Reader(ABC):
     
