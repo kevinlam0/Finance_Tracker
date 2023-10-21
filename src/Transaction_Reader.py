@@ -3,9 +3,9 @@ from personalization import VALID_CATEGORIES, VALID_INCOME, INPUT_CATEGORIES, IN
 
 class Transaction_Reader(ABC):
     
-    def initialize(self, data: str):
-        from Wells_Fargo_Reader import Wells_Fargo_Reader
+    def initialize(cls, data: str):
         if data == "Wells Fargo":
+            from Wells_Fargo_Reader import Wells_Fargo_Reader
             card = input("What type of card is this Wells Fargo data from, Credit or Debit?: ")
             return Wells_Fargo_Reader(card)
         
