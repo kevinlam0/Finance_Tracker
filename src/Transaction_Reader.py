@@ -3,6 +3,12 @@ from personalization import VALID_CATEGORIES, VALID_INCOME, INPUT_CATEGORIES, IN
 
 class Transaction_Reader(ABC):
     
+    def initialize(self, data: str):
+        from Wells_Fargo_Reader import Wells_Fargo_Reader
+        if data == "Wells Fargo":
+            card = input("What type of card is this Wells Fargo data from, Credit or Debit?: ")
+            return Wells_Fargo_Reader(card)
+        
     @abstractmethod
     def format_rows_from_csv_file(self, file: str) -> list:
         # [Date, Amount, Description, Category, Type]

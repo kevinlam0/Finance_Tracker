@@ -5,6 +5,8 @@ import Venmo_Reader
 
 class Wells_Fargo_Reader(Transaction_Reader):
     card: str
+    Venmo_Reader: Venmo_Reader.Venmo_Reader
+    
     def __new__(cls, *args, **kwargs):
         instance = super(Wells_Fargo_Reader, cls).__new__(cls)
         return instance

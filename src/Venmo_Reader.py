@@ -2,6 +2,10 @@ import calendar
 OLDEST_YEAR = 2015
 NEWEST_YEAR = 2025
 
+class Venmo_Reader():
+    def __init__(self, month, year):
+        pass
+
 def find_venmo_description(amount: float, date: str) -> str:
     return "Venmo transaction: " + find_venmo_transaction_description(amount, date)
 
