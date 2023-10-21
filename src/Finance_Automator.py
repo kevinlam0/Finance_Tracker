@@ -2,6 +2,9 @@ import gspread
 import time
 import os
 import Transaction_Reader
+import calendar
+
+MONTHS = set([calendar.month_name[i].lower() for i in range(1, 13)])
 
 class Finance_Automator:
     __google_sheet_name: str
@@ -16,7 +19,7 @@ class Finance_Automator:
         self.__sheet_file = sa.open(self.__google_sheet_name)
         print("Connection to Google is successful!\n")
         
-    def inject_one_file(self, sheet: str, file: str):
+    def inject_one_file_to_sheet(self, sheet: str, file: str):
         wks = self.__sheet_file.worksheet(sheet)
         rows = Transaction_Reader.format_rows_csv_file(file)
         
@@ -32,20 +35,20 @@ class Finance_Automator:
         for file in files:
             # If not a csv file skip
             if not file.endswith('csv'): continue
-            
-            # Find index of the year
-            i = file.find("2")
-            month = _find_month(file, i)
-            year = file[i:i+4]
-            
-            sheet = f"{month} {year}"
-            data_file = f"{directory}/{file}"
-            self.inject_one_file(sheet, data_file)
+            sheet, data_file = _findSheet_findFile(file, directory)
+            self.inject_one_file_to_sheet(sheet, data_file)
             
 def _find_month(file:str, index_of_year: int) -> str:
-    months: set = {'january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'}
     file_without_year = file[:index_of_year]
-    while file_without_year not in months:
+    while file_without_year not in MONTHS:
         file_without_year = file_without_year[1:]
         
     return file_without_year.capitalize()
+
+def _findSheet_findFile(file: str, directory: str):
+    i = file.find("2")
+    month = _find_month(file, i)
+    year = file[i:i+4]
+    sheet = f"{month} {year}"
+    data_file = f"{directory}/{file}"
+    return sheet, data_file

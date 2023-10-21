@@ -21,8 +21,10 @@ folder = "checkingsData"
 
 
 if __name__ == "__main__":
-    fa = Finance_Automator.Finance_Automator(google_sheet)
-    fa.connect_to_google()
-    # fa.inject_one_file(sheet, file_path)
-    fa.inject_all_data(folder)
+    # fa = Finance_Automator.Finance_Automator(google_sheet)
+    # fa.connect_to_google()
+    # # fa.inject_one_file_to_sheet(sheet, file_path)
+    # fa.inject_all_data(folder)
     # file_path = "./venmoData/venmojune2022.csv"
+    import calendar
+    print(set([calendar.month_name[i].lower() for i in range(1, 13)]))

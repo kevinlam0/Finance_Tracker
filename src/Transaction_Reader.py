@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from personalization import VALID_CATEGORIES, VALID_INCOME, INPUT_CATEGORIES, INPUT_INCOME, categories
+from personalization import VALID_CATEGORIES, VALID_INCOME, INPUT_CATEGORIES, INPUT_INCOME, CATEGORIES
 
 class Transaction_Reader(ABC):
     
@@ -12,21 +12,39 @@ class Transaction_Reader(ABC):
         lower_desc = description.lower()
         
         # Already a listed category
-        for key in categories.keys():
+        for key in CATEGORIES.keys():
             if key in lower_desc: 
-                return categories[key]
+                return CATEGORIES[key]
         
-        venmo = "This is the description: " if "Venmo" not in description else ""
-        message = f"\nWe could not label the transaction.\n{venmo}{description}\nThis is the amount: {amount}\nThis is the date: {date}"
+        if "Venmo" in description:
+            description_message = ""
+        else: 
+            description_message = "This is the description: "
+            
+        """ 
+        -- When Venmo is not in the description --
+        We could not label the transaction.
+        This is the description: {Description}
+        This is the amount: {Amount}
+        This is the date: {Date}
+    
+        -- When Venmo is in the description -- 
+        We could not label the transaction.
+        Venmo transaction: {Desciption}
+        This is the amount: {Amount}
+        This is the date: {Date}
+        """
+        message = f"\nWe could not label the transaction.\n{description_message}{description}\nThis is the amount: {amount}\nThis is the date: {date}"
+    
         return _get_user_category(message)
 
     def _find_income_category(self, description: str, amount: float, date: str) -> str:
         lower_desc = description.lower()
         for key in VALID_INCOME:
-            if key in lower_desc: return VALID_INCOME.get(key)
+            if key in lower_desc: 
+                return VALID_INCOME.get(key)
 
-        message = f"\nThis is an income with a source we cannot find: {description}\nThis is the amount: {amount}\nThis is the date: {date}"
-        return _get_user_income_category(message)
+        return _get_user_income_category(description, amount, date)
 
 def _get_user_category(message: str):
     print(message)
@@ -40,8 +58,16 @@ def _get_user_category(message: str):
         return INPUT_CATEGORIES.get(category)
     return category.capitalize()
 
-def _get_user_income_category(message: str):
+def _get_user_income_category(description: str, amount: float, date: str) -> str:
+    message = f"\nThis is an income with a source we cannot find:\nThis is the description: {description}\nThis is the amount: {amount}\nThis is the date: {date}"
+    """
+    This is an income with a source we cannot find.
+    This is the description: {Description}
+    This is the amount: {Amount}
+    This is the date: {Date}
+    """
     print(message)
+    
     category = input("Please state where this income is from: ").lower().strip()
     while (category != "" and category not in VALID_INCOME and category not in INPUT_INCOME):
         category = input("The category is not valid for this income transaction.\nPlease input from your listed income: ").lower().strip()
