@@ -22,10 +22,10 @@ def find_venmo_transaction_description(amount: float, date: str) -> str:
         row: list = lines[i].split(",")
         venmo_amount: float = float(row[8][0] + row[8][3:])
         venmo_day: int = int(row[2][8:10])
-        if venmo_amount == amount and abs(day - venmo_day) < 3: 
+        if venmo_amount == amount and abs(day - venmo_day) < 2: 
             return f"\"{row[5]}\" to {row[7]}" 
         
-    raise Exception
+    raise Exception("This is the transaction: " + str((month, day, year, amount)))
 
 def __read_csv_file(file_path: str) -> list:
     file = open(file_path, 'r')

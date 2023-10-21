@@ -24,8 +24,11 @@ class Wells_Fargo_Reader(Transaction_Reader):
                 amount = float(row[1])
                 
                 # Find the description of the transaction.
-                if "VENMO" in row[4]: 
+                if "VENMO" in row[4] and "CASHOUT" not in row[4]: 
                     desc = "Venmo transaction: " + Venmo_Reader.find_venmo_transaction_description(amount, date) 
+                    payment_type = "Venmo"
+                elif "VENMO CASHOUT" in row[4]:
+                    desc = "Venmo cashout"
                     payment_type = "Venmo"
                 else: 
                     desc = self.__trim_description(row[4])

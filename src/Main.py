@@ -23,6 +23,6 @@ folder = "checkingsData"
 if __name__ == "__main__":
     fa = Finance_Automator.Finance_Automator(google_sheet)
     fa.connect_to_google()
-    fa.inject_one_file(sheet, file_path)
-    # fa.inject_all_data(folder)
-    file_path = "./venmoData/venmojune2022.csv"
+    # fa.inject_one_file(sheet, file_path)
+    fa.inject_all_data(folder)
+    # file_path = "./venmoData/venmojune2022.csv"
