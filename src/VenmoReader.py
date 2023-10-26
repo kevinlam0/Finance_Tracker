@@ -2,7 +2,7 @@ import calendar
 OLDEST_YEAR = 2015
 NEWEST_YEAR = 2025
 
-class Venmo_Reader():
+class VenmoReader():
     def __init__(self, month, year):
         pass
 

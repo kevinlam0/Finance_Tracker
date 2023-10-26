@@ -1,16 +1,17 @@
 import os, sys
 fpath = os.path.join(os.path.dirname(__file__), '../')
 sys.path.append(fpath)
-from src.Transaction_Reader import Transaction_Reader
+from src.TransactionReader import TransactionReader
 import csv
-import src.Venmo_Reader as Venmo_Reader
+import src.VenmoReader as VenmoReader
+import src.personalization as personalization
 
-class Wells_Fargo_Reader(Transaction_Reader):
+class WellsFargoReader(TransactionReader):
     card: str
-    Venmo_Reader: Venmo_Reader.Venmo_Reader
+    Venmo_Reader: VenmoReader.VenmoReader
     
     def __new__(cls, *args, **kwargs):
-        instance = super(Wells_Fargo_Reader, cls).__new__(cls)
+        instance = super(WellsFargoReader, cls).__new__(cls)
         return instance
     
     def __init__(self, type: str):
@@ -36,7 +37,7 @@ class Wells_Fargo_Reader(Transaction_Reader):
                     
                 # Venmo but not cashout
                 elif "VENMO" in row[4]: 
-                    desc = Venmo_Reader.find_venmo_description(amount, date)
+                    desc = VenmoReader.find_venmo_description(amount, date)
                     payment_type = "Venmo"
                 
                 # Anything else 

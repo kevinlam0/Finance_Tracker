@@ -1,12 +1,13 @@
 import gspread
 import time
 import os
-import Transaction_Reader
+import src.TransactionReader as TransactionReader
 import calendar
+from TransactionReaderFactory import TransactionReaderFactory as TRF
 
 MONTHS = set([calendar.month_name[i].lower() for i in range(1, 13)])
 
-class Finance_Automator:
+class FinanceAutomator:
     __google_sheet_name: str
     __sheet_file: gspread.spreadsheet.Spreadsheet
     
@@ -21,7 +22,8 @@ class Finance_Automator:
         
     def inject_one_file_to_sheet(self, sheet: str, file: str):
         wks = self.__sheet_file.worksheet(sheet)
-        rows = Transaction_Reader.format_rows_csv_file(file)
+        reader = TRF.get_reader(file)
+        rows = reader.format_rows_from_csv_file(file)
         
         for row in rows:
             insertion_row = [row[0], row[1], row[2], row[3], row[4]]

@@ -1,4 +1,4 @@
-import Finance_Automator
+import src.FinanceAutomator as FinanceAutomator
 
 """
 Run this file in order to input transactional data into your Google Sheet.

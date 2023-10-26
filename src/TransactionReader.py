@@ -4,7 +4,7 @@ fpath = os.path.join(os.path.dirname(__file__), '../')
 sys.path.append(fpath)
 from src.personalization import VALID_CATEGORIES, VALID_INCOME, INPUT_CATEGORIES, INPUT_INCOME, CATEGORIES
 
-class Transaction_Reader(ABC):
+class TransactionReader(ABC):
         
     @abstractmethod
     def format_rows_from_csv_file(self, file: str) -> list:
@@ -80,12 +80,6 @@ def _get_user_income_category(description: str, amount: float, date: str) -> str
         return INPUT_INCOME.get(category)
     return category.capitalize()
 
-def format_rows_csv_file(file: str):
-    from Wells_Fargo_Reader import Wells_Fargo_Reader
-    if "WF" in file:
-        card = input("What type of card is this Wells Fargo data from, Credit or Debit?: ")
-        reader: Wells_Fargo_Reader = Wells_Fargo_Reader(card)
-        return reader.format_rows_from_csv_file(file)
     
 
     
