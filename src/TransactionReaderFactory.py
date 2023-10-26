@@ -9,9 +9,9 @@ class TransactionReaderFactory:
     def get_reader(file: str):
         if "WF" in file:
             type = input("What type of card is this Wells Fargo data from, Credit or Debit?: ")
-            return WFR(type)
+            return WFR(type, file)
         if "DC" in file:
             type = input("What type of card is this Discover data from, Credit or Debit?: ")
-            return DCR(type)
+            return DCR(type, file)
         
         
