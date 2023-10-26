@@ -30,6 +30,8 @@ class WellsFargoReader(TransactionReader):
                 amount = float(row[1])
                 
                 # -- Find the description and payment method -- #
+                # This is payment to another card 
+                if _is_another_cards_transaction(row[4]): continue
                 
                 # Cashout from venmo
                 if amount > 0 and ("VENMO CASHOUT" in row[4] or "RTP from VENMO" in row[4]):
@@ -73,4 +75,9 @@ class WellsFargoReader(TransactionReader):
 
     def get_venmo_reader(self) -> VenmoReader.VenmoReader:
         return self.__Venmo_Reader
-    
+
+def _is_another_cards_transaction(description: str) -> bool:
+    for card in personalization.OTHER_CARDS:
+        if card in description:
+            return True
+    return False
