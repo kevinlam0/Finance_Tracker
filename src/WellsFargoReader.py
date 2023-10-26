@@ -18,14 +18,7 @@ class WellsFargoReader(TransactionReader):
         c = type.lower()
         if c != "credit" and c != "debit": raise Exception("The card type needs to be debit or credit.")
         self.__card = c.capitalize()
-        self.__Venmo_Reader = self.find_venmo_data(file)
-        
-    def find_venmo_data(self, file):
-        ans = input(f"Is this Wells Fargo {self.__card} card linked to a Venmo account (yes/no)? ").lower()
-        while ans != "yes" and ans != "no":
-            ans = input("Error the answer needs to be yes or no. Is this card linked to a Venmo account? ").lower()
-        if ans == "no": return None
-        return VenmoReader.VenmoReader(file)
+        self.__Venmo_Reader = super().find_venmo_data(file, self.__card, "Wells Fargo")
         
     def format_rows_from_csv_file(self, file: str) -> list:
         transactions = []
@@ -42,7 +35,6 @@ class WellsFargoReader(TransactionReader):
                 if amount > 0 and ("VENMO CASHOUT" in row[4] or "RTP from VENMO" in row[4]):
                     desc = "Venmo cashout"
                     payment_type = "Venmo"
-                    category = "Venmo income"
                     
                 # Venmo but not cashout
                 elif "VENMO" in row[4]: 
@@ -55,11 +47,11 @@ class WellsFargoReader(TransactionReader):
                     payment_type = self.__card
                 
                 # If it is an income and not from venmo
-                if amount > 0 and "Venmo" not in desc: 
-                    category = super()._find_income_category(desc, amount, date)
+                if amount > 0:
+                    if "Venmo" in desc: category = "Venmo income"
+                    else: category = super()._find_income_category(desc, amount, date) 
                 
-                elif amount < 0: 
-                    category = super()._find_category(desc, amount, date)
+                else: category = super()._find_category(desc, amount, date)
                 
                 transaction: tuple = ((date, amount, desc, category, payment_type))
                 transactions.append(transaction)
