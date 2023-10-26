@@ -33,6 +33,9 @@ class VenmoReader():
                 # Identify amount 
                 row: list = self.__data[i].split(",")
                 venmo_amount: float = float(row[8][0] + row[8][3:])
+                # try:
+                #     venmo_amount: float = float(row[8][0] + row[8][3:])
+                # except ValueError: raise ValueError(f"{row[8]}")
                 if amount != venmo_amount: continue
                 
                 # Identify the day
@@ -41,7 +44,6 @@ class VenmoReader():
                     self.__data.pop(i)
                     return f"\"{row[5]}\" to {row[7]}"
             delta+=1
-        
         raise Exception("This is the transaction: " + str((date, amount)))
 
 
