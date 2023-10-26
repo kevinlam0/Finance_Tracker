@@ -11,6 +11,10 @@ class TransactionReader(ABC):
         # [Date, Amount, Description, Category, Type]
         pass
     
+    @abstractmethod
+    def find_venmo_data(self, file: str):
+        pass
+    
     def _find_category(self, description: str, amount: str, date: str) -> str:
         lower_desc = description.lower()
         
