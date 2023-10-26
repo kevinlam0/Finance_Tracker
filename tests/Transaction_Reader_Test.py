@@ -12,7 +12,7 @@ class Transaction_Reader_Tests(unittest.TestCase):
     def test_initialize(self):
         result = TransactionReaderFactory.get_reader("wells fargo", 'credit')
         self.assertIsInstance(result, wfr)
-        
+        self.assertEquals("Credit", result.card)
         
 if __name__ == "__main__":
     unittest.main()
