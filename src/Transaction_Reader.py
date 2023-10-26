@@ -5,12 +5,6 @@ sys.path.append(fpath)
 from src.personalization import VALID_CATEGORIES, VALID_INCOME, INPUT_CATEGORIES, INPUT_INCOME, CATEGORIES
 
 class Transaction_Reader(ABC):
-    
-    def initialize(cls, data: str):
-        if data == "Wells Fargo":
-            from Wells_Fargo_Reader import Wells_Fargo_Reader
-            card = input("What type of card is this Wells Fargo data from, Credit or Debit?: ")
-            return Wells_Fargo_Reader(card)
         
     @abstractmethod
     def format_rows_from_csv_file(self, file: str) -> list:
@@ -92,3 +86,6 @@ def format_rows_csv_file(file: str):
         card = input("What type of card is this Wells Fargo data from, Credit or Debit?: ")
         reader: Wells_Fargo_Reader = Wells_Fargo_Reader(card)
         return reader.format_rows_from_csv_file(file)
+    
+
+    
