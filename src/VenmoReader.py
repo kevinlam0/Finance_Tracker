@@ -1,7 +1,7 @@
 import calendar, os, sys
 fpath = os.path.join(os.path.dirname(__file__), "../")
 sys.path.append(fpath)
-from src.CustomExceptions.MonthNotFoundError import MonthNotFoundError
+from src.CustomExceptions.MonthNotFoundError import IllegalDateError
 OLDEST_YEAR = 2015
 NEWEST_YEAR = 2025
 MONTHS = set([calendar.month_name[i].lower() for i in range(1, 13)])
@@ -51,13 +51,13 @@ def find_file(file: str) -> str:
     i = file.find("2")
     year = file[i:i+4]
     try: year = int(year)
-    except ValueError: raise ValueError(f"This file does not have a valid year: {year}")
-    if not (OLDEST_YEAR <= year <= NEWEST_YEAR): raise ValueError(f"This file is outside of the valid years {OLDEST_YEAR} - {NEWEST_YEAR}: {year}")
+    except ValueError: raise IllegalDateError(f"This file does not have a valid year: {year}")
+    if not (OLDEST_YEAR <= year <= NEWEST_YEAR): raise IllegalDateError(f"This file is outside of the valid years {OLDEST_YEAR} - {NEWEST_YEAR}: {year}")
         
     month = ""
     for m in MONTHS:
         if m in file:
             month = m
             break
-    if month == "": raise MonthNotFoundError(f"This file does not have a valid month: {file}")
+    if month == "": raise IllegalDateError(f"This file does not have a valid month: {file}")
     return f"venmo{month}{year}.csv"

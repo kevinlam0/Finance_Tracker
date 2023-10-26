@@ -1,2 +1,2 @@
-class MonthNotFoundError(Exception):
+class IllegalDateError (Exception):
     pass
