@@ -1,0 +1,2 @@
+class IllegalDateError (Exception):
+    pass
