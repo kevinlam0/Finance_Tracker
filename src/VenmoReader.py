@@ -37,7 +37,7 @@ class VenmoReader():
                 
                 # Identify the day
                 venmo_day: int = int(row[2][8:10])
-                if abs(venmo_day - day) < delta:
+                if abs(venmo_day - day) <= delta:
                     self.__data.pop(i)
                     return f"\"{row[5]}\" to {row[7]}"
             delta+=1

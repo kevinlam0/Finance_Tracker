@@ -13,9 +13,9 @@ If you want to inject all data of a folder
 Args:
     folder (str): Name of folder with CSV data files in there
 """
-file_path = './checkingsData/WFaugust2022.csv'
+file_path = './checkingsData/WFseptember2022.csv'
 google_sheet = "Finance Tracker 2"
-sheet = "August 2022"
+sheet = "September 2022"
 folder = "checkingsData"
 
 
