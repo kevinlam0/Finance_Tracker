@@ -13,12 +13,12 @@ class VenmoReaderTest(unittest.TestCase):
     def test_find_file_normal_data(self):
         file = "WFoctober2021.csv"
         result = VenmoReader.find_file(file)
-        self.assertEqual(result, "venmooctober2021.csv")
+        self.assertEqual(result, "./venmoData/venmooctober2021.csv")
     
     def test_find_file_year_before_month(self):
         file = "WE2023december.csv"
         result = VenmoReader.find_file(file)
-        self.assertEqual(result, "venmodecember2023.csv")
+        self.assertEqual(result, "./venmoData/venmodecember2023.csv")
         
     def test_find_file_month_not_valid(self):
         file = "WEdfjkls2021"

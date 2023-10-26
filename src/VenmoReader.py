@@ -23,13 +23,9 @@ def find_venmo_transaction_description(amount: float, date: str) -> str:
     # Get the file path of the correct venmo month data
     month = calendar.month_name[int(date[:2])].lower()
     day = int(date[3:5])
-    if not (1 <= day and day <= 31): raise Exception
+    if not(1<= day <= 31): raise IllegalDateError(f"The day of this date is not a real day: {date}")
     year = date[-4:]
-    if not (OLDEST_YEAR <= int(year) <= NEWEST_YEAR): raise Exception
-    
-    file_path = f"./venmoData/venmo{month}{year}.csv"
-
-    lines = __read_csv_file(file_path)
+    if not (OLDEST_YEAR <= int(year) <= NEWEST_YEAR): raise IllegalDateError(f"The year of this date is outside the range: {date}")
     
     # Find the correct transaction
     for i in range(len(lines)):
@@ -60,4 +56,4 @@ def find_file(file: str) -> str:
             month = m
             break
     if month == "": raise IllegalDateError(f"This file does not have a valid month: {file}")
-    return f"venmo{month}{year}.csv"
+    return f"./venmoData/venmo{month}{year}.csv"
