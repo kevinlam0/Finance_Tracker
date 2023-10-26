@@ -7,17 +7,25 @@ import src.VenmoReader as VenmoReader
 import src.personalization as personalization
 
 class WellsFargoReader(TransactionReader):
-    card: str
-    Venmo_Reader: VenmoReader.VenmoReader
+    __card: str
+    __Venmo_Reader: VenmoReader.VenmoReader
     
     def __new__(cls, *args, **kwargs):
         instance = super(WellsFargoReader, cls).__new__(cls)
         return instance
     
-    def __init__(self, type: str):
+    def __init__(self, type: str, file: str):
         c = type.lower()
         if c != "credit" and c != "debit": raise Exception("The card type needs to be debit or credit.")
-        self.card = c.capitalize()
+        self.__card = c.capitalize()
+        self.__Venmo_Reader = self.find_venmo_data(file)
+        
+    def find_venmo_data(self, file):
+        ans = input("Is this Wells Fargo {self.card} card linked to a Venmo account (yes/no)? ").lower()
+        while ans != "yes" and ans != "no":
+            ans = input("Error the answer needs to be yes or no. Is this card linked to a Venmo account? ").lower()
+        if ans == "no": return None
+        return VenmoReader.VenmoReader(file)
         
     def format_rows_from_csv_file(self, file: str) -> list:
         transactions = []
@@ -68,3 +76,9 @@ class WellsFargoReader(TransactionReader):
             
         return  " ".join(str(element) for element in desc)
 
+    def get_card(self) -> str:
+        return self.__card
+
+    def get_venmo_reader(self) -> VenmoReader.VenmoReader:
+        return self.__Venmo_Reader
+    
