@@ -2,7 +2,7 @@ import os, sys, unittest
 fpath = os.path.join(os.path.dirname(__file__), "../")
 sys.path.append(fpath)
 import src.VenmoReader as VenmoReader
-from src.CustomExceptions.MonthNotFoundError import IllegalDateError as IDE
+from src.CustomExceptions.IllegalDateError import IllegalDateError as IDE
 
 class VenmoReaderTest(unittest.TestCase):
     

@@ -1,7 +1,7 @@
 import gspread
 import time
 import os
-import src.TransactionReader as TransactionReader
+import TransactionReader as TransactionReader
 import calendar
 from TransactionReaderFactory import TransactionReaderFactory as TRF
 
