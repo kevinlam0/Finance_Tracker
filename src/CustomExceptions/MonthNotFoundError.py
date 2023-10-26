@@ -1,0 +1,2 @@
+class MonthNotFoundError(Exception):
+    pass
