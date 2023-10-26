@@ -1,10 +1,16 @@
-import calendar
+import calendar, os, sys
+fpath = os.path.join(os.path.dirname(__file__), "../")
+sys.path.append(fpath)
+from src.CustomExceptions.MonthNotFoundError import MonthNotFoundError
 OLDEST_YEAR = 2015
 NEWEST_YEAR = 2025
+MONTHS = set([calendar.month_name[i].lower() for i in range(1, 13)])
 
 class VenmoReader():
-    def __init__(self, month, year):
-        pass
+    __data: list
+    def __init__(self, file):
+        venmo_file = find_file(file)
+        self.__data = __read_csv_file(venmo_file)
 
 def find_venmo_description(amount: float, date: str) -> str:
     return "Venmo transaction: " + find_venmo_transaction_description(amount, date)
@@ -40,3 +46,18 @@ def __read_csv_file(file_path: str) -> list:
     lines = [line.strip() for line in file]
     lines = lines[4:-27]
     return lines 
+
+def find_file(file: str) -> str:
+    i = file.find("2")
+    year = file[i:i+4]
+    try: year = int(year)
+    except ValueError: raise ValueError(f"This file does not have a valid year: {year}")
+    if not (OLDEST_YEAR <= year <= NEWEST_YEAR): raise ValueError(f"This file is outside of the valid years {OLDEST_YEAR} - {NEWEST_YEAR}: {year}")
+        
+    month = ""
+    for m in MONTHS:
+        if m in file:
+            month = m
+            break
+    if month == "": raise MonthNotFoundError(f"This file does not have a valid month: {file}")
+    return f"venmo{month}{year}.csv"
